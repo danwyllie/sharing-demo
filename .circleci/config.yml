@@ -21,7 +21,7 @@ jobs:
           at: ./
       - run:
           name: "Cat hello"
-          command: cat demo/output.txt
+          command: cat output.txt
 workflows:
   say-hello-workflow:
     jobs:
