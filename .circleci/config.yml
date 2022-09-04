@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: "Save hello"
-          command: echo "Hello, World!" > output.txt
+          command: echo "Hello dan!" > output.txt
       - persist_to_workspace:
           root: .
           paths:
