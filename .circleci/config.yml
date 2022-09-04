@@ -11,7 +11,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/dir
           paths:
-            - demo/output.txt
+            - demo/*
   print_output_file:
     docker:
       - image: cimg/base:stable
