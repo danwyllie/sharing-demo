@@ -9,16 +9,16 @@ jobs:
           name: "Save hello"
           command: echo "Hello, World!" > output.txt
       - persist_to_workspace:
-          root: /tmp/dir
+          root: .
           paths:
-            - demo/*
+            - output.txt
   print_output_file:
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/dir
+          at: ./
       - run:
           name: "Cat hello"
           command: cat demo/output.txt
