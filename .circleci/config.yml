@@ -7,22 +7,30 @@ jobs:
       - checkout
       - run:
           name: "Save hello"
-          command: echo "Hello dan!" > output.txt
+#          command: echo "Hello dan!" > output.txt
+          command: |
+            mkdir backend
+            cd backend
+            echo "The migration has been executed successfully. End of file." > migrationresults.txt
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - output.txt
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
-            - output.txt
+            - project/backend/migrationresults.txt
 
-  print_output_file:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-          name: "Cat hello"
-          command: cat output.txt
+#  print_output_file:
+#    docker:
+#      - image: cimg/base:stable
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: ./
+#      - run:
+#          name: "Cat hello"
+#          command: cat output.txt
   
   dan-testing:
     docker:
@@ -30,14 +38,14 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./
+          at: ~/
       - run:
           name: "Testing installs"
           command: |
             echo "== cat the file =="
-            cat output.txt
+            cat project/backend/migrationresults.txt
             echo "== check file contents =="
-            if grep -q "dan" output.txt
+            if grep -q "successfully" output.txt
             then
               curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Hello found'
               echo "Curl command run(?)"
