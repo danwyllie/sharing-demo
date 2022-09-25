@@ -88,10 +88,14 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: "Install dependencies - tar"
+          command: |
+            yum install -y tar gzip
+      - run:
           command: |
             export ImportOldworkflowID=$(cat LastworkflowID.txt)
             echo "Testing:" $ImportOldworkflowID
-            
+
 
 workflows:
   say-hello-workflow:
