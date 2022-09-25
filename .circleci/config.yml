@@ -92,23 +92,28 @@ jobs:
           name: "Install dependencies - tar"
           command: |
             yum install -y tar gzip
+#      - run:
+#          name: "Grab and export last workflow id"
+#          command: |
+#            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
+#            echo $LastworkflowID > LastworkflowID.txt
+#      - run:
+#          name: "Grab last workflowid"
+#          command: |
+#            echo "== cat workflowidtxt =="
+#            cat LastworkflowID.txt
       - run:
-          name: "Grab and export last workflow id"
-          command: |
-            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
-            echo $LastworkflowID > LastworkflowID.txt
-      - run:
-          name: "Grab last workflowid"
-          command: |
-            echo "== cat workflowidtxt =="
-            cat LastworkflowID.txt
-      - run:
-          name: "Temp test for code"
+          name: "Temp test code to grab last workflowid from cloudformation names"
           command: |
             export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
             echo "== Show lastworkflow id to console =="
             echo $LastworkflowID
-
+      - run:
+          name: "Grab current cloudformation stacks"
+          command: |
+            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
+            echo "== Show current cloudformation stacks =="
+            printf '%s\n' "${STACKS[@]}"
 
 workflows:
   say-hello-workflow:
