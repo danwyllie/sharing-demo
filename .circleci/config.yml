@@ -17,6 +17,9 @@ jobs:
             echo "== cat of file to console =="
             cat migrationresults.txt
             ls -d $(pwd -P)/migrationresults.txt
+            cd ..
+            echo "workflow1234" > LastworkflowID.txt
+            cat LastworkflowID.txt
 #      - persist_to_workspace:
 #          root: .
 #          paths:
@@ -25,7 +28,7 @@ jobs:
           root: ~/
           paths:
             - project/backend/migrationresults.txt
-
+            - project/LastworkflowID.txt
 #  print_output_file:
 #    docker:
 #      - image: cimg/base:stable
@@ -37,24 +40,24 @@ jobs:
 #          name: "Cat hello"
 #          command: cat output.txt
   
-  dan-testing:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: "Testing installs"
-          command: |
-            echo "== cat the file =="
-            cat ~/project/backend/migrationresults.txt
-            echo "== check file contents =="
-            if grep -q "successfully" ~/project/backend/migrationresults.txt
-            then
-              curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Hello found'
-              echo "Curl command run(?)"
-            fi
+#  dan-testing:
+#    docker:
+#      - image: circleci/node:13.8.0
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: ~/
+#      - run:
+#          name: "Testing installs"
+#          command: |
+#            echo "== cat the file =="
+#            cat ~/project/backend/migrationresults.txt
+#            echo "== check file contents =="
+#            if grep -q "successfully" ~/project/backend/migrationresults.txt
+#            then
+#              curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Hello found'
+#              echo "Curl command run(?)"
+#            fi
 
   run-migrations-test:
     docker:
@@ -76,16 +79,31 @@ jobs:
             aws --version
             echo "== Curl test =="
             curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Testing!'
+
+  importid:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          command: |
+            export ImportOldworkflowID=$(cat LastworkflowID.txt)
+            echo "Testing:" $ImportOldworkflowID
+            
+
 workflows:
   say-hello-workflow:
     jobs:
       - save_hello_world_output
+      - importid
 #      - print_output_file:
 #          requires:
 #            - save_hello_world_output
-      - dan-testing:
-          requires:
-            - save_hello_world_output
-      - run-migrations-test:
-          requires:
-            - dan-testing
+#      - dan-testing:
+#          requires:
+#            - save_hello_world_output
+#      - run-migrations-test:
+#          requires:
+#            - dan-testing
