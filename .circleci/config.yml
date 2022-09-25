@@ -85,12 +85,12 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
       - run:
           name: "Install dependencies - tar"
           command: |
             yum install -y tar gzip
+      - attach_workspace:
+          at: ~/
       - run:
           command: |
             export ImportOldworkflowID=$(cat LastworkflowID.txt)
