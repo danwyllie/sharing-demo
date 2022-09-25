@@ -14,6 +14,8 @@ jobs:
             pwd
             echo "The migration has been executed successfully. End of file." > migrationresults.txt
             ls
+            echo "== cat of file to console =="
+            cat migrationresults.txt
 #      - persist_to_workspace:
 #          root: .
 #          paths:
@@ -45,9 +47,9 @@ jobs:
           name: "Testing installs"
           command: |
             echo "== cat the file =="
-            cat project/backend/migrationresults.txt
+            cat ~/project/backend/migrationresults.txt
             echo "== check file contents =="
-            if grep -q "successfully" output.txt
+            if grep -q "successfully" ~/project/backend/migrationresults.txt
             then
               curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Hello found'
               echo "Curl command run(?)"
