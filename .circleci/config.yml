@@ -93,7 +93,7 @@ jobs:
           at: ~/
       - run:
           command: |
-            export ImportOldworkflowID=$(cat LastworkflowID.txt)
+            export ImportOldworkflowID=$(cat project/LastworkflowID.txt)
             echo "Testing:" $ImportOldworkflowID
 
 
