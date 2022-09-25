@@ -108,6 +108,8 @@ jobs:
             export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
             echo "== Show lastworkflow id to console =="
             echo $LastworkflowID
+            export LastID="${LastworkflowID: -7}"
+            echo $LastID
       - run:
           name: "Grab current cloudformation stacks"
           command: |
