@@ -122,9 +122,13 @@ jobs:
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${LastworkflowID}" ]]
             then
               echo "CurrentWorkflow != LastworkflowID"
+            fi
+            
             if [[ "${LastworkflowID}" =~ "${STACKS[@]}" ]]
             then
               echo "LastworkflowID =~ STACKS"
+            fi
+            
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${LastworkflowID}" ]]
             then
               echo "CurrentWorkflowID =~ LastWorkflowID"
