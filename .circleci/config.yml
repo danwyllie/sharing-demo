@@ -11,7 +11,9 @@ jobs:
           command: |
             mkdir backend
             cd backend
+            pwd
             echo "The migration has been executed successfully. End of file." > migrationresults.txt
+            ls
 #      - persist_to_workspace:
 #          root: .
 #          paths:
@@ -19,7 +21,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/backend/migrationresults.txt
+            - ~/project/backend/migrationresults.txt
 
 #  print_output_file:
 #    docker:
