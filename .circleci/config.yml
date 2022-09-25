@@ -17,8 +17,10 @@ jobs:
             echo "== cat of file to console =="
             cat migrationresults.txt
             ls -d $(pwd -P)/migrationresults.txt
+            echo "== Testing lastworkflowid =="
             cd ..
             echo "workflow1234" > LastworkflowID.txt
+            echo "== Contents of file =="
             cat LastworkflowID.txt
 #      - persist_to_workspace:
 #          root: .
@@ -93,6 +95,7 @@ jobs:
           at: ~/
       - run:
           command: |
+            echo "== Trying to show LastworkflowID =="
             export ImportOldworkflowID=$(cat project/LastworkflowID.txt)
             echo "Testing:" $ImportOldworkflowID
 
