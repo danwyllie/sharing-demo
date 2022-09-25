@@ -55,6 +55,23 @@ jobs:
               curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Hello found'
               echo "Curl command run(?)"
             fi
+
+  run-migrations-test:
+    docker:
+      - image: circleci/node:13.8.0
+      #- image: python:3.11-rc-alpine
+      #- image: cimg/node:16.13.1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: "Install dependencies"  
+          command: |
+            pip install awscli
+            apk add --update curl
+            echo "insecure" >> ~/.curlrc
+
 workflows:
   say-hello-workflow:
     jobs:
@@ -63,5 +80,8 @@ workflows:
 #          requires:
 #            - save_hello_world_output
       - dan-testing:
+          requires:
+            - save_hello_world_output
+      - run-migrations-test:
           requires:
             - save_hello_world_output
