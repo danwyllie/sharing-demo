@@ -71,6 +71,7 @@ jobs:
             pip install awscli
             apk add --update curl
             echo "insecure" >> ~/.curlrc
+            aws --version
 
 workflows:
   say-hello-workflow:
@@ -84,4 +85,4 @@ workflows:
             - save_hello_world_output
       - run-migrations-test:
           requires:
-            - save_hello_world_output
+            - dan-testing
