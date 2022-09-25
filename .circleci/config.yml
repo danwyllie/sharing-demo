@@ -94,10 +94,11 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: "Grab last workflowid"
           command: |
             echo "== Trying to show LastworkflowID =="
             export ImportOldworkflowID=$(cat project/LastworkflowID.txt)
-            echo "Testing:" $ImportOldworkflowID
+            $ImportOldworkflowID
 
 
 workflows:
