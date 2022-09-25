@@ -66,15 +66,21 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: "Install dependencies - AWS CLI" 
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
           name: "Install dependencies"  
           command: |
-            echo "== Curl config =="
-            echo "insecure" >> ~/.curlrc
+            echo "== Update Curl pkg =="
+            apk add --update curl
             echo "== Check AWS =="
             aws --version
-            echo "== Update Curl pkg =="
-            apk add --update curl         
-            cat ~/.curlrc
+            echo "== Curl config =="
+            echo "insecure" >> .curlrc
+            cat .curlrc
 workflows:
   say-hello-workflow:
     jobs:
