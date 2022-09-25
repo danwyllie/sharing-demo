@@ -69,7 +69,7 @@ jobs:
           name: "Install dependencies - AWS CLI" 
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
+            unzip -q awscliv2.zip
             sudo ./aws/install
       - run:
           name: "Install dependencies"  
@@ -78,9 +78,8 @@ jobs:
             apk add --update curl
             echo "== Check AWS =="
             aws --version
-            echo "== Curl config =="
-            echo "insecure" >> .curlrc
-            cat .curlrc
+            echo "== Curl test =="
+            curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Testing!'
 workflows:
   say-hello-workflow:
     jobs:
