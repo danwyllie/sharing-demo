@@ -72,10 +72,8 @@ jobs:
             unzip -q awscliv2.zip
             sudo ./aws/install
       - run:
-          name: "Install dependencies"  
+          name: "Perform testing"  
           command: |
-            echo "== Update Curl pkg =="
-            apk add --update curl
             echo "== Check AWS =="
             aws --version
             echo "== Curl test =="
