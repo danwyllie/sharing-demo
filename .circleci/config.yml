@@ -92,8 +92,11 @@ jobs:
           name: "Install dependencies - tar"
           command: |
             yum install -y tar gzip
-      - attach_workspace:
-          at: ~/
+      - run:
+          name: "Grab and export last workflow id"
+          command: |
+            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
+            echo $LastworkflowID > LastworkflowID.txt
       - run:
           name: "Grab last workflowid"
           command: |
