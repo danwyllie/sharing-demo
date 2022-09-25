@@ -98,8 +98,10 @@ jobs:
       - run:
           name: "Grab last workflowid"
           command: |
+            echo "== cat workflowidtxt =="
+            cat LastworkflowID.txt
             echo "== Trying to show LastworkflowID =="
-            export ImportOldworkflowID=$(cat project/LastworkflowID.txt)
+            export ImportOldworkflowID=$(cat LastworkflowID.txt)
             $ImportOldworkflowID
 
 
