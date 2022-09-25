@@ -125,24 +125,31 @@ jobs:
             LASTWORKFLOWURL="https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/${CIRCLE_WORKFLOW_ID:0:7}"
             echo "$LASTWORKFLOWURL"
       - run:
-          name: "Testing logic checks for cleanup job"
+          name: "Grab last workflowid"
           command: |
-            # You can use any condition like:
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${LastworkflowID}" ]]
+            export LastworkflowID=($(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate))
+            echo "== Showing workflowid to console =="
+            echo "$LastworkflowID"
+            export LastID="${LastworkflowID: -7}"
+            echo "$LastID"
+            echo "$LastID" > LastworkflowID.txt            
+      - run:
+          name: "Grab current cloudformation stacks"
+          command: |
+            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
+            echo "== Show current cloudformation stacks =="
+            printf '%s\n' "${STACKS[@]}"
+      - run:
+          name: "Verify stacks and cleanup if required"
+          command: |
+            if [[ "${STACKS[@]}" =~ "${LastID}"  ]]
             then
-              echo "CurrentWorkflow != LastworkflowID"
-            fi
-            
-            if [[ "${LastworkflowID}" =~ "${STACKS[@]}" ]]
-            then
-              echo "LastworkflowID =~ STACKS"
-            fi
-
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${LastworkflowID}" ]]
-            then
-              echo "CurrentWorkflowID =~ LastWorkflowID"
+              echo "== Cleanup required: Deleting AWS Cloudformation Stacks =="
+              #aws s3 rm "s3://udapeople-${LastID}" --recursive
+              #aws cloudformation delete-stack --stack-name "udapeople-backend-${LastID}"
+              #aws cloudformation delete-stack --stack-name "udapeople-frontend-${LastID}"
             else
-              echo "No match"
+              echo "No cleanup performed: AWS Cloudformation Stacks are still current"
             fi
 
 workflows:
