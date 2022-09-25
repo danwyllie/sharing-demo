@@ -68,11 +68,13 @@ jobs:
       - run:
           name: "Install dependencies"  
           command: |
-            pip install awscli
-            apk add --update curl
+            echo "== Curl config =="
             echo "insecure" >> ~/.curlrc
+            echo "== Check AWS =="
             aws --version
-
+            echo "== Update Curl pkg =="
+            apk add --update curl         
+            cat ~/.curlrc
 workflows:
   say-hello-workflow:
     jobs:
