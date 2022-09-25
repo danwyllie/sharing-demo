@@ -34,9 +34,9 @@ jobs:
       - run:
           name: "Testing installs"
           command: |
-            if grep -q "hello" ~/output.txt
+            if grep -q "hello" output.txt
             then
-              curl -k https://kvdb.io/[92NGEye9MJm1giTJk2FtfJ]/[migration_${CIRCLE_WORKFLOW_ID:0:7}]  -d 'hello found'
+              curl -k https://kvdb.io/[92NGEye9MJm1giTJk2FtfJ]/[migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}]  -d 'hello found'
               echo "Curl command run(?)"
             fi
 workflows:
