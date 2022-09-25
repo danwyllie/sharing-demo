@@ -17,8 +17,10 @@ jobs:
             echo "== cat of file to console =="
             cat migrationresults.txt
             ls -d $(pwd -P)/migrationresults.txt
+      - run:
+          name: "Save workflowid"
+          command: |  
             echo "== Testing lastworkflowid =="
-            cd ..
             echo "workflow1234" > LastworkflowID.txt
             echo "== Contents of file =="
             cat LastworkflowID.txt
@@ -30,7 +32,7 @@ jobs:
           root: ~/
           paths:
             - project/backend/migrationresults.txt
-            - project/LastworkflowID.txt
+            - LastworkflowID.txt
 #  print_output_file:
 #    docker:
 #      - image: cimg/base:stable
