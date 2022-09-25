@@ -16,6 +16,7 @@ jobs:
             ls
             echo "== cat of file to console =="
             cat migrationresults.txt
+            ls -d $(pwd -P)/migrationresults.txt
 #      - persist_to_workspace:
 #          root: .
 #          paths:
