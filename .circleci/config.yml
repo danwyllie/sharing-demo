@@ -34,6 +34,9 @@ jobs:
       - run:
           name: "Testing installs"
           command: |
+            echo "== cat the file =="
+            cat output.txt
+            echo "== check file contents =="
             if grep -q "hello" output.txt
             then
               curl -k https://kvdb.io/[92NGEye9MJm1giTJk2FtfJ]/[migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}]  -d 'hello found'
