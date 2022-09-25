@@ -116,6 +116,7 @@ jobs:
             printf '%s\n' "${STACKS[@]}"
       - run:
           name: "Testing grabbing old workflow"
+          command: |
             export LastworkflowID=($(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate))
             echo "== Showing workflowid to console =="
             echo "$LastworkflowID"
