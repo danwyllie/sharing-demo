@@ -102,6 +102,13 @@ jobs:
           command: |
             echo "== cat workflowidtxt =="
             cat LastworkflowID.txt
+      - run:
+          name: "Temp test for code"
+          command: |
+            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
+            echo "== Show lastworkflow id to console =="
+            echo $LastworkflowID
+
 
 workflows:
   say-hello-workflow:
