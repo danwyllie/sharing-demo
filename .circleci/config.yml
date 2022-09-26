@@ -107,7 +107,7 @@ jobs:
             echo "LastID =" "$LastID"
             echo "== Show current cloudformation stacks =="
             printf '%s\n' "${STACKS[@]}"
-            if [[ "${STACKS[@]}" =~ "${LastworkflowID}"  ]]
+            if [[ "${STACKS[@]}" =~ "${LastID}"  ]]
             then
               echo "== Cleanup required: Deleting AWS Cloudformation Stacks =="
               echo "Lastworkflow =" "$LastworkflowID"
