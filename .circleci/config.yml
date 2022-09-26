@@ -82,6 +82,9 @@ jobs:
             aws --version
             echo "== Curl test =="
             curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/migrationCODETEST_${CIRCLE_WORKFLOW_ID:0:7}  -d 'Testing!'
+            export LASTWORKFLOWURL=$("https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7}")
+            echo "== URL test =="
+            echo "$LASTWORKFLOWURL"
 
   importid:
     docker:
