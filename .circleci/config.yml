@@ -99,15 +99,15 @@ jobs:
           name: "Create .env file"
           command: |
             echo "== Confirm variables being used =="
-            echo TYPEORM_CONNECTION
-            echo TYPEORM_MIGRATIONS_DIR
-            echo TYPEORM_ENTITIES
-            echo TYPEORM_MIGRATIONS
-            echo TYPEORM_HOST
-            echo TYPEORM_PORT
-            echo TYPEORM_USERNAME
-            echo TYPEORM_PASSWORD
-            echo TYPEORM_DATABASE
+            echo "$TYPEORM_CONNECTION"
+            echo "$TYPEORM_MIGRATIONS_DIR"
+            echo "$TYPEORM_ENTITIES"
+            echo "$TYPEORM_MIGRATIONS"
+            echo "$TYPEORM_HOST"
+            echo "$TYPEORM_PORT"
+            echo "$TYPEORM_USERNAME"
+            echo "$TYPEORM_PASSWORD"
+            echo "$TYPEORM_DATABASE"
 
 #      - run:
 #          name: "Verify stacks and cleanup if required"
