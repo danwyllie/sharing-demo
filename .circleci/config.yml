@@ -96,7 +96,7 @@ jobs:
 #          command: |
 #            yum install -y tar gzip
       - run:
-          name: "Create .env file"
+          name: "Verify env variables"
           command: |
             echo "== Confirm variables being used =="
             echo "$TYPEORM_CONNECTION"
