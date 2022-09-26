@@ -91,33 +91,47 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+#      - run:
+#          name: "Install dependencies - tar"
+#          command: |
+#            yum install -y tar gzip
       - run:
-          name: "Install dependencies - tar"
+          name: "Create .env file"
           command: |
-            yum install -y tar gzip
-      - run:
-          name: "Verify stacks and cleanup if required"
-          command: |
-            echo "== Grabbing AWS Stacks =="
-            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
-            echo "== Grabbing lastworkflow id =="
-            export LastworkflowID=$(curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_837aeec)
-            echo "Lastworkflow =" "$LastworkflowID"
-            export LastID="${LastworkflowID: -7}"
-            echo "LastID =" "$LastID"
-            echo "== Show current cloudformation stacks =="
-            printf '%s\n' "${STACKS[@]}"
-            if [[ "${STACKS[@]}" =~ "${LastID}"  ]]
-            then
-              echo "== Cleanup required: Deleting AWS Cloudformation Stacks =="
-              echo "Lastworkflow =" "$LastworkflowID"
-              echo "LastID =" "$LastID"
-              echo aws s3 rm "s3://udapeople-${LastworkflowID}" --recursive
-              echo aws cloudformation delete-stack --stack-name "udapeople-backend-${LastworkflowID}"
-              echo aws cloudformation delete-stack --stack-name "udapeople-frontend-${LastworkflowID}"
-            else
-              echo "No cleanup performed: AWS Cloudformation Stacks are still current"
-            fi
+            echo "== Confirm variables being used =="
+            echo TYPEORM_CONNECTION
+            echo TYPEORM_MIGRATIONS_DIR
+            echo TYPEORM_ENTITIES
+            echo TYPEORM_MIGRATIONS
+            echo TYPEORM_HOST
+            echo TYPEORM_PORT
+            echo TYPEORM_USERNAME
+            echo TYPEORM_PASSWORD
+            echo TYPEORM_DATABASE
+
+#      - run:
+#          name: "Verify stacks and cleanup if required"
+#          command: |
+#            echo "== Grabbing AWS Stacks =="
+#            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
+#            echo "== Grabbing lastworkflow id =="
+#            export LastworkflowID=$(curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_837aeec)
+#            echo "Lastworkflow =" "$LastworkflowID"
+#            export LastID="${LastworkflowID: -7}"
+#            echo "LastID =" "$LastID"
+#            echo "== Show current cloudformation stacks =="
+#            printf '%s\n' "${STACKS[@]}"
+#            if [[ "${STACKS[@]}" =~ "${LastID}"  ]]
+#            then
+#              echo "== Cleanup required: Deleting AWS Cloudformation Stacks =="
+#              echo "Lastworkflow =" "$LastworkflowID"
+#              echo "LastID =" "$LastID"
+#              echo aws s3 rm "s3://udapeople-${LastworkflowID}" --recursive
+#              echo aws cloudformation delete-stack --stack-name "udapeople-backend-${LastworkflowID}"
+#              echo aws cloudformation delete-stack --stack-name "udapeople-frontend-${LastworkflowID}"
+#            else
+#              echo "No cleanup performed: AWS Cloudformation Stacks are still current"
+#            fi
 ##      - run:
 #          name: "Grab and export last workflow id"
 #          command: |
