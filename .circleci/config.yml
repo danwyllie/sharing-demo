@@ -117,8 +117,8 @@ jobs:
               echo aws cloudformation delete-stack --stack-name "udapeople-frontend-${LastworkflowID}"
             else
               echo "No cleanup performed: AWS Cloudformation Stacks are still current"
-            fi            
-#      - run:
+            fi
+##      - run:
 #          name: "Grab and export last workflow id"
 #          command: |
 #            export LASTWORKFLOWURL=($("https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7}"))
