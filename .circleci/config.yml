@@ -86,7 +86,7 @@ jobs:
             echo "== URL test =="
             echo "$LASTWORKFLOWURL"
 
-  importid:
+  Testing:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -96,12 +96,35 @@ jobs:
           command: |
             yum install -y tar gzip
       - run:
-          name: "Grab and export last workflow id"
+          name: "Verify stacks and cleanup if required"
           command: |
-            export LASTWORKFLOWURL=($("https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7}"))
-            echo "== URL test =="
-            echo "$LASTWORKFLOWURL"
-            echo "https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7}"
+            echo "== Grabbing AWS Stacks =="
+            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
+            echo "== Grabbing lastworkflow id =="
+            export LastworkflowID=$(curl -k https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "Lastworkflow =" "$LastworkflowID"
+            export LastID="${LastworkflowID: -7}"
+            echo "LastID =" "$LastID"
+            echo "== Show current cloudformation stacks =="
+            printf '%s\n' "${STACKS[@]}"
+            if [[ "${STACKS[@]}" =~ "${LastworkflowID}"  ]]
+            then
+              echo "== Cleanup required: Deleting AWS Cloudformation Stacks =="
+              echo "Lastworkflow =" "$LastworkflowID"
+              echo "LastID =" "$LastID"
+              echo aws s3 rm "s3://udapeople-${LastworkflowID}" --recursive
+              echo aws cloudformation delete-stack --stack-name "udapeople-backend-${LastworkflowID}"
+              echo aws cloudformation delete-stack --stack-name "udapeople-frontend-${LastworkflowID}"
+            else
+              echo "No cleanup performed: AWS Cloudformation Stacks are still current"
+            fi            
+#      - run:
+#          name: "Grab and export last workflow id"
+#          command: |
+#            export LASTWORKFLOWURL=($("https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7}"))
+#            echo "== URL test =="
+#            echo "$LASTWORKFLOWURL"
+#            echo "https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/lastworkflow_${CIRCLE_WORKFLOW_ID:0:7}"
 #      - run:
 #          name: "Grab last workflowid"
 #          command: |
@@ -109,63 +132,51 @@ jobs:
 #            cat LastworkflowID.txt
 #            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
 #            echo $LastworkflowID > LastworkflowID.txt
-      - run:
-          name: "Temp test code to grab last workflowid from cloudformation names"
-          command: |
-            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
-            echo "== Show lastworkflow id to console =="
-            echo $LastworkflowID
-            export LastID="${LastworkflowID: -7}"
-            echo $LastID
-      - run:
-          name: "Grab current cloudformation stacks"
-          command: |
-            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
-            echo "== Show current cloudformation stacks =="
-            printf '%s\n' "${STACKS[@]}"
-      - run:
-          name: "Testing grabbing old workflow"
-          command: |
-            export LastworkflowID=($(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate))
-            echo "== Showing workflowid to console =="
-            echo "$LastworkflowID"
-            LASTWORKFLOWURL="https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/${CIRCLE_WORKFLOW_ID:0:7}"
-            echo "$LASTWORKFLOWURL"
-      - run:
-          name: "Grab last workflowid"
-          command: |
-            export LastworkflowID=($(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate))
-            echo "== Showing workflowid to console =="
-            echo "$LastworkflowID"
-            export LastID="${LastworkflowID: -7}"
-            echo "$LastID"
-            echo "$LastID" > LastworkflowID.txt            
-      - run:
-          name: "Grab current cloudformation stacks"
-          command: |
-            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
-            echo "== Show current cloudformation stacks =="
-            printf '%s\n' "${STACKS[@]}"
-      - run:
-          name: "Verify stacks and cleanup if required"
-          command: |
-            if [[ "${STACKS[@]}" =~ "${LastID}"  ]]
-            then
-              echo "== Cleanup required: Deleting AWS Cloudformation Stacks =="
-              #aws s3 rm "s3://udapeople-${LastID}" --recursive
-              #aws cloudformation delete-stack --stack-name "udapeople-backend-${LastID}"
-              #aws cloudformation delete-stack --stack-name "udapeople-frontend-${LastID}"
-            else
-              echo "No cleanup performed: AWS Cloudformation Stacks are still current"
-            fi
+#      - run:
+#          name: "Temp test code to grab last workflowid from cloudformation names"
+#          command: |
+#            export LastworkflowID=$(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate)
+#            echo "== Show lastworkflow id to console =="
+#            echo $LastworkflowID
+#            export LastID="${LastworkflowID: -7}"
+#            echo $LastID
+#      - run:
+#          name: "Grab current cloudformation stacks"
+#          command: |
+#            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
+#            echo "== Show current cloudformation stacks =="
+#            printf '%s\n' "${STACKS[@]}"
+#      - run:
+#          name: "Testing grabbing old workflow"
+#          command: |
+#            export LastworkflowID=($(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate))
+#            echo "== Showing workflowid to console =="
+#            echo "$LastworkflowID"
+#            LASTWORKFLOWURL="https://kvdb.io/92NGEye9MJm1giTJk2FtfJ/${CIRCLE_WORKFLOW_ID:0:7}"
+#            echo "$LASTWORKFLOWURL"
+#      - run:
+#          name: "Grab last workflowid"
+#          command: |
+#            export LastworkflowID=($(aws cloudformation list-exports --region ${AWS_DEFAULT_REGION} --query "Exports[?Name==\`WorkflowID\`].Value" --output text --no-paginate))
+#            echo "== Showing workflowid to console =="
+#            echo "$LastworkflowID"
+#            export LastID="${LastworkflowID: -7}"
+#            echo "$LastID"
+#            echo "$LastID" > LastworkflowID.txt            
+#      - run:
+#          name: "Grab current cloudformation stacks"
+#          command: |
+#            export STACKS=($(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[*].StackName" --no-paginate --output text))
+#            echo "== Show current cloudformation stacks =="
+#            printf '%s\n' "${STACKS[@]}"
 
 workflows:
   say-hello-workflow:
     jobs:
-      - save_hello_world_output
-      - importid:
-          requires:
-            - save_hello_world_output
+#      - save_hello_world_output
+      - Testing
+#          requires:
+#            - save_hello_world_output
 #      - print_output_file:
 #          requires:
 #            - save_hello_world_output
